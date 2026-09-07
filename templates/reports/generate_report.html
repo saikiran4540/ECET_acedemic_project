@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}Generate Report{% endblock %}
+{% block page_title %}Download Reports{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-file-earmark-arrow-down"></i> Generate Report
+            </div>
+            <div class="card-body p-4">
+                <form method="POST">
+                    {% csrf_token %}
+                    
+                    <div class="mb-4">
+                        <label class="form-label">Report Type</label>
+                        <div class="list-group">
+                            <label class="list-group-item">
+                                <input class="form-check-input me-2" type="radio" name="report_type" value="detection" checked>
+                                <strong>Detection History Report</strong>
+                                <p class="mb-0 text-muted small">Export all your phishing detection records with details</p>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> Reports are generated in CSV format for easy analysis and record-keeping.
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-download"></i> Download Report
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

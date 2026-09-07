@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% block title %}Model Performance{% endblock %}
+{% block page_title %}Model Performance Metrics{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-graph-up"></i> Training History
+            </div>
+            <div class="card-body">
+                {% if trainings %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Model Name</th>
+                                <th>Dataset</th>
+                                <th>Accuracy</th>
+                                <th>Precision</th>
+                                <th>Recall</th>
+                                <th>F1 Score</th>
+                                <th>Status</th>
+                                <th>Started By</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for training in trainings %}
+                            <tr>
+                                <td>#{{ training.id }}</td>
+                                <td><strong>{{ training.model_name }}</strong></td>
+                                <td>{{ training.dataset.name }}</td>
+                                <td>
+                                    {% if training.accuracy %}
+                                    <span class="badge bg-primary">{{ training.accuracy|floatformat:4 }}</span>
+                                    {% else %}
+                                    -
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if training.precision %}
+                                    {{ training.precision|floatformat:4 }}
+                                    {% else %}
+                                    -
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if training.recall %}
+                                    {{ training.recall|floatformat:4 }}
+                                    {% else %}
+                                    -
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if training.f1_score %}
+                                    {{ training.f1_score|floatformat:4 }}
+                                    {% else %}
+                                    -
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span class="badge bg-{% if training.status == 'completed' %}success{% elif training.status == 'failed' %}danger{% elif training.status == 'training' %}warning{% else %}secondary{% endif %}">
+                                        {{ training.get_status_display }}
+                                    </span>
+                                </td>
+                                <td>{{ training.started_by.username }}</td>
+                                <td>{{ training.started_at|date:"M d, Y H:i" }}</td>
+                            </tr>
+                            {% if training.error_message %}
+                            <tr>
+                                <td colspan="10" class="bg-light">
+                                    <small class="text-danger">
+                                        <i class="bi bi-exclamation-circle"></i> Error: {{ training.error_message }}
+                                    </small>
+                                </td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="bi bi-graph-up" style="font-size: 3rem; color: #ccc;"></i>
+                    <p class="mt-3 text-muted">No training history available</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,26 @@
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Local development
+.venv/
+venv/
+wevenv/
+db.sqlite3
+*.log
+.env
+
+# Generated Django and tooling output
+staticfiles/
+media/uploads/
+media/datasets/combined_data.csv
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# IDE and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

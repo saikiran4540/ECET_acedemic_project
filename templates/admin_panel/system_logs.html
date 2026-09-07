@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% block title %}System Logs{% endblock %}
+{% block page_title %}System Logs{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-file-text"></i> System Activity Logs
+            </div>
+            <div class="card-body">
+                <!-- Filter -->
+                <form method="GET" class="mb-3">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <select class="form-select" name="type">
+                                <option value="all" {% if log_type == 'all' %}selected{% endif %}>All Types</option>
+                                <option value="info" {% if log_type == 'info' %}selected{% endif %}>Info</option>
+                                <option value="warning" {% if log_type == 'warning' %}selected{% endif %}>Warning</option>
+                                <option value="error" {% if log_type == 'error' %}selected{% endif %}>Error</option>
+                                <option value="success" {% if log_type == 'success' %}selected{% endif %}>Success</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="bi bi-filter"></i> Filter
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Logs -->
+                {% if page_obj %}
+                <div class="table-responsive">
+                    <table class="table table-hover table-sm">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Message</th>
+                                <th>User</th>
+                                <th>IP Address</th>
+                                <th>Timestamp</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for log in page_obj %}
+                            <tr>
+                                <td>
+                                    <span class="badge bg-{{ log.log_type }}">
+                                        {{ log.get_log_type_display }}
+                                    </span>
+                                </td>
+                                <td>{{ log.message }}</td>
+                                <td>{{ log.user.username|default:"-" }}</td>
+                                <td>{{ log.ip_address|default:"-" }}</td>
+                                <td>{{ log.created_at|date:"M d, Y H:i:s" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                {% if page_obj.has_other_pages %}
+                <nav>
+                    <ul class="pagination justify-content-center">
+                        {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}&type={{ log_type }}">Previous</a>
+                        </li>
+                        {% endif %}
+                        
+                        <li class="page-item active">
+                            <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+                        </li>
+
+                        {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}&type={{ log_type }}">Next</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+                {% else %}
+                <p class="text-center text-muted py-4">No logs found</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

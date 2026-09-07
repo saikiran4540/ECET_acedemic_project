@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% block title %}Detection Result{% endblock %}
+{% block page_title %}Detection Result{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <!-- Result Card -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="bi bi-file-earmark-check"></i> Detection Result #{{ detection.id }}
+            </div>
+            <div class="card-body p-4">
+                <div class="row">
+                    <div class="col-md-8">
+                        <h5>Input:</h5>
+                        <p class="bg-light p-3 rounded" style="word-break: break-all;">
+                            {{ detection.input_text }}
+                        </p>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        {% if detection.result == 'phishing' %}
+                        <div class="alert alert-danger p-4">
+                            <i class="bi bi-exclamation-triangle" style="font-size: 4rem;"></i>
+                            <h3 class="mt-3">⚠️ PHISHING</h3>
+                            <p class="mb-0">This URL/Email is likely phishing!</p>
+                        </div>
+                        {% else %}
+                        <div class="alert alert-success p-4">
+                            <i class="bi bi-shield-check" style="font-size: 4rem;"></i>
+                            <h3 class="mt-3">✓ SAFE</h3>
+                            <p class="mb-0">This URL/Email appears legitimate</p>
+                        </div>
+                        {% endif %}
+                        
+                        <div class="mt-3">
+                            <h5>Confidence Score</h5>
+                            <h2 class="text-primary">{{ detection.confidence_score|floatformat:1 }}%</h2>
+                            <div class="progress" style="height: 20px;">
+                                <div class="progress-bar {% if detection.result == 'phishing' %}bg-danger{% else %}bg-success{% endif %}" 
+                                     role="progressbar" 
+                                     style="width: {{ detection.confidence_score }}%">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-4">
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Detection Type:</strong> 
+                            <span class="badge bg-secondary">{{ detection.get_detection_type_display }}</span>
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Analyzed On:</strong> {{ detection.created_at|date:"F d, Y H:i:s" }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features Card -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="bi bi-gear"></i> Key Features Analyzed
+            </div>
+            <div class="card-body">
+                {% if features %}
+                <p class="text-muted mb-3">The following features contributed most to this detection:</p>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Feature Name</th>
+                                <th>Value</th>
+                                <th>Importance Score</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for feature in features %}
+                            <tr>
+                                <td><strong>{{ feature.feature_name|title }}</strong></td>
+                                <td>{{ feature.feature_value|floatformat:2 }}</td>
+                                <td>
+                                    <div class="progress" style="height: 20px; width: 200px;">
+                                        <div class="progress-bar bg-info" 
+                                             role="progressbar" 
+                                             style="width: {{ feature.importance|floatformat:0 }}%">
+                                            {{ feature.importance|floatformat:1 }}
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-center text-muted py-4">No feature details available</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="card">
+            <div class="card-body text-center">
+                <a href="{% url 'detection:analyze' %}" class="btn btn-primary">
+                    <i class="bi bi-arrow-left"></i> Analyze Another
+                </a>
+                <a href="{% url 'detection:download_report' detection.id %}" class="btn btn-success">
+                    <i class="bi bi-download"></i> Download Report
+                </a>
+                <a href="{% url 'detection:history' %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-clock-history"></i> View History
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

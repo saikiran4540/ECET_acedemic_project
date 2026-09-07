@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% block title %}Analyze URL/Email{% endblock %}
+{% block page_title %}Phishing Detection Analysis{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-shield-check"></i> Submit for Analysis
+            </div>
+            <div class="card-body p-4">
+                <form method="POST" id="analyzeForm">
+                    {% csrf_token %}
+                    
+                    <div class="mb-4">
+                        <label class="form-label">Detection Type</label>
+                        <div class="btn-group w-100" role="group">
+                            <input type="radio" class="btn-check" name="detection_type" id="auto_type" value="auto" checked>
+                            <label class="btn btn-outline-success" for="auto_type">
+                                <i class="bi bi-magic"></i> Auto-Detect
+                            </label>
+                            
+                            <input type="radio" class="btn-check" name="detection_type" id="url_type" value="url">
+                            <label class="btn btn-outline-primary" for="url_type">
+                                <i class="bi bi-link-45deg"></i> URL
+                            </label>
+                            
+                            <input type="radio" class="btn-check" name="detection_type" id="email_type" value="email">
+                            <label class="btn btn-outline-primary" for="email_type">
+                                <i class="bi bi-envelope"></i> Email
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="input_text" class="form-label">Enter URL or Email Content</label>
+                        <textarea class="form-control" id="input_text" name="input_text" rows="4" 
+                                  placeholder="e.g., https://example.com/verify-account" required></textarea>
+                        <div class="form-text">
+                            <i class="bi bi-info-circle"></i> Enter the complete URL or email content to analyze for phishing indicators.
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <i class="bi bi-lightbulb"></i> <strong>Tip:</strong> Our AI-powered system analyzes multiple features including URL structure, suspicious keywords, domain characteristics, and more to provide accurate phishing detection.
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg" id="analyzeBtn">
+                            <i class="bi bi-search"></i> Analyze Now
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Example URLs Section -->
+        <div class="card mt-4">
+            <div class="card-body">
+                <h6 class="mb-3"><i class="bi bi-clipboard-check"></i> Test Examples</h6>
+                <p class="text-muted mb-2"><strong>Legitimate URLs:</strong></p>
+                <ul class="mb-3">
+                    <li><code>https://www.google.com</code></li>
+                    <li><code>https://github.com/projects</code></li>
+                </ul>
+                <p class="text-muted mb-2"><strong>Legitimate Emails:</strong></p>
+                <ul class="mb-3">
+                    <li><code>support@google.com</code></li>
+                    <li><code>info@github.com</code></li>
+                </ul>
+                <p class="text-muted mb-2"><strong>Suspicious URLs (for testing):</strong></p>
+                <ul class="mb-3">
+                    <li><code>http://secure-paypal-verify.suspicious.com/login</code></li>
+                    <li><code>http://192.168.1.1/bank-update</code></li>
+                </ul>
+                <p class="text-muted mb-2"><strong>Suspicious Emails (for testing):</strong></p>
+                <ul>
+                    <li><code>verify.account.urgent@paypal-secure-update.com</code></li>
+                    <li><code>administrator_access_confirm@192.168.1.1</code></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    $('#analyzeForm').on('submit', function() {
+        $('#analyzeBtn').html('<span class="spinner-border spinner-border-sm me-2"></span>Analyzing...').prop('disabled', true);
+    });
+});
+</script>
+{% endblock %}

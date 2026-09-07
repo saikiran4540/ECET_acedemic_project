@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% block title %}Manage Users{% endblock %}
+{% block page_title %}User Management{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-people"></i> Registered Users
+            </div>
+            <div class="card-body">
+                {% if page_obj %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Full Name</th>
+                                <th>Staff</th>
+                                <th>Active</th>
+                                <th>Joined</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for u in page_obj %}
+                            <tr>
+                                <td>#{{ u.id }}</td>
+                                <td><strong>{{ u.username }}</strong></td>
+                                <td>{{ u.email }}</td>
+                                <td>{{ u.get_full_name|default:"-" }}</td>
+                                <td>
+                                    {% if u.is_staff %}
+                                    <span class="badge bg-warning">Staff</span>
+                                    {% endif %}
+                                    {% if u.is_superuser %}
+                                    <span class="badge bg-danger">Superuser</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if u.is_active %}
+                                    <span class="badge bg-success">Active</span>
+                                    {% else %}
+                                    <span class="badge bg-secondary">Inactive</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ u.date_joined|date:"M d, Y" }}</td>
+                                <td>
+                                    {% if not u.is_superuser %}
+                                    <a href="{% url 'admin_panel:toggle_user_status' u.id %}" 
+                                       class="btn btn-sm {% if u.is_active %}btn-warning{% else %}btn-success{% endif %}">
+                                        <i class="bi bi-{% if u.is_active %}ban{% else %}check-circle{% endif %}"></i>
+                                        {% if u.is_active %}Deactivate{% else %}Activate{% endif %}
+                                    </a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                {% if page_obj.has_other_pages %}
+                <nav>
+                    <ul class="pagination justify-content-center">
+                        {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                        </li>
+                        {% endif %}
+                        
+                        <li class="page-item active">
+                            <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+                        </li>
+
+                        {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+                {% else %}
+                <p class="text-center text-muted py-4">No users found</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

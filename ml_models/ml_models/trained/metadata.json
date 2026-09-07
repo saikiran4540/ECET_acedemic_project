@@ -1,0 +1,63 @@
+{
+    "feature_names": [
+        "url_length",
+        "domain_length",
+        "path_length",
+        "query_length",
+        "dot_count",
+        "hyphen_count",
+        "underscore_count",
+        "slash_count",
+        "questionmark_count",
+        "equal_count",
+        "at_count",
+        "and_count",
+        "exclamation_count",
+        "space_count",
+        "tilde_count",
+        "comma_count",
+        "plus_count",
+        "asterisk_count",
+        "hashtag_count",
+        "dollar_count",
+        "percent_count",
+        "has_ip",
+        "has_https",
+        "has_http",
+        "subdomain_count",
+        "suspicious_keywords",
+        "digit_count",
+        "letter_count",
+        "domain_token_count",
+        "path_token_count",
+        "url_entropy"
+    ],
+    "training_history": {
+        "ann_metrics": {
+            "accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1_score": 1.0
+        },
+        "stacked_metrics": {
+            "accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1_score": 1.0
+        },
+        "cv_scores": [
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0
+        ],
+        "cv_mean": 1.0,
+        "cv_std": 0.0,
+        "training_date": "2025-12-15T15:48:35.624440",
+        "dataset_path": "../datasets/phishing_dataset.csv",
+        "features_count": 31,
+        "training_samples": 8000,
+        "test_samples": 2000
+    }
+}

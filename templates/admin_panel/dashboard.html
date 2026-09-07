@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block page_title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="mb-0">Total Users</h6>
+                    <h3>{{ total_users }}</h3>
+                </div>
+                <i class="bi bi-people" style="font-size: 2.5rem; opacity: 0.3;"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card success">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="mb-0">Total Detections</h6>
+                    <h3>{{ total_detections }}</h3>
+                </div>
+                <i class="bi bi-bar-chart-line" style="font-size: 2.5rem; opacity: 0.3;"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card danger">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="mb-0">Phishing Detected</h6>
+                    <h3>{{ phishing_detected }}</h3>
+                </div>
+                <i class="bi bi-exclamation-triangle" style="font-size: 2.5rem; opacity: 0.3;"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card warning">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="mb-0">Datasets</h6>
+                    <h3>{{ total_datasets }}</h3>
+                </div>
+                <i class="bi bi-database" style="font-size: 2.5rem; opacity: 0.3;"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Detection Chart -->
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-graph-up"></i> Detection Activity (Last 7 Days)
+            </div>
+            <div class="card-body">
+                <canvas id="detectionChart" height="80"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activities -->
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-clock-history"></i> Recent System Logs
+            </div>
+            <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                {% if recent_logs %}
+                {% for log in recent_logs %}
+                <div class="alert alert-{{ log.log_type }} alert-sm mb-2">
+                    <small>
+                        <strong>{{ log.created_at|date:"M d, H:i" }}</strong> - {{ log.message }}
+                    </small>
+                </div>
+                {% endfor %}
+                {% else %}
+                <p class="text-muted text-center">No recent logs</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-gear"></i> Recent Model Training
+            </div>
+            <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                {% if recent_trainings %}
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Model</th>
+                                <th>Accuracy</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for training in recent_trainings %}
+                            <tr>
+                                <td>{{ training.model_name }}</td>
+                                <td>
+                                    {% if training.accuracy %}
+                                    {{ training.accuracy|floatformat:4 }}
+                                    {% else %}
+                                    -
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span class="badge bg-{% if training.status == 'completed' %}success{% elif training.status == 'failed' %}danger{% elif training.status == 'training' %}warning{% else %}secondary{% endif %}">
+                                        {{ training.get_status_display }}
+                                    </span>
+                                </td>
+                                <td>{{ training.started_at|date:"M d" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted text-center">No training history</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+const ctx = document.getElementById('detectionChart');
+new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: {{ chart_dates|safe }},
+        datasets: [{
+            label: 'Detections',
+            data: {{ chart_counts|safe }},
+            borderColor: 'rgb(65, 84, 241)',
+            backgroundColor: 'rgba(65, 84, 241, 0.1)',
+            tension: 0.4,
+            fill: true
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                display: true,
+                position: 'top',
+            },
+            title: {
+                display: false
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    precision: 0
+                }
+            }
+        }
+    }
+});
+</script>
+{% endblock %}

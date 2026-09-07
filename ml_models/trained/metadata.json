@@ -1,0 +1,41 @@
+{
+    "feature_names": [
+        "url_length",
+        "num_dots",
+        "has_https",
+        "domain_age_days",
+        "num_special_chars",
+        "num_redirects",
+        "has_ip_address",
+        "urgent_words_count",
+        "num_links"
+    ],
+    "training_history": {
+        "ann_metrics": {
+            "accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1_score": 1.0
+        },
+        "stacked_metrics": {
+            "accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1_score": 1.0
+        },
+        "cv_scores": [
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0
+        ],
+        "cv_mean": 1.0,
+        "cv_std": 0.0,
+        "training_date": "2026-04-09T15:23:48.467600",
+        "dataset_path": "C:\\final project\\phishing_detection_system (1)\\media\\datasets\\numeric_phishing_dataset_1.csv",
+        "features_count": 9,
+        "training_samples": 4064,
+        "test_samples": 1000
+    }
+}
